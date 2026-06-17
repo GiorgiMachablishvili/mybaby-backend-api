@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, String, DateTime, Float, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from database import Base
@@ -15,13 +15,15 @@ class User(Base):
     name          = Column(String, nullable=True)
     created_at    = Column(DateTime, default=datetime.utcnow)
 
-    sleep_sessions       = relationship("SleepSession",      back_populates="user", cascade="all, delete")
-    feeding_logs         = relationship("FeedingLog",        back_populates="user", cascade="all, delete")
-    diaper_logs          = relationship("DiaperLog",         back_populates="user", cascade="all, delete")
-    baby_profiles        = relationship("BabyProfile",       back_populates="user", cascade="all, delete")
-    sleep_goal           = relationship("SleepGoal",         back_populates="user", cascade="all, delete", uselist=False)
-    growth_measurements  = relationship("GrowthMeasurement", back_populates="user", cascade="all, delete")
-    growth_comparison    = relationship("GrowthComparison",  back_populates="user", cascade="all, delete", uselist=False)
+    sleep_sessions          = relationship("SleepSession",           back_populates="user", cascade="all, delete")
+    feeding_logs            = relationship("FeedingLog",             back_populates="user", cascade="all, delete")
+    diaper_logs             = relationship("DiaperLog",              back_populates="user", cascade="all, delete")
+    baby_profiles           = relationship("BabyProfile",            back_populates="user", cascade="all, delete")
+    sleep_goal              = relationship("SleepGoal",              back_populates="user", cascade="all, delete", uselist=False)
+    growth_measurements     = relationship("GrowthMeasurement",      back_populates="user", cascade="all, delete")
+    growth_comparison       = relationship("GrowthComparison",       back_populates="user", cascade="all, delete", uselist=False)
+    vaccine_records         = relationship("VaccineRecord",          back_populates="user", cascade="all, delete")
+    vaccination_reminders   = relationship("VaccinationReminderRecord", back_populates="user", cascade="all, delete")
 
 
 class BabyProfile(Base):
@@ -107,6 +109,44 @@ class GrowthComparison(Base):
     updated_at             = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="growth_comparison")
+
+
+class VaccineRecord(Base):
+    __tablename__ = "vaccine_records"
+
+    id                   = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id              = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    name                 = Column(String, nullable=False)
+    full_name            = Column(String, nullable=False)
+    age_range            = Column(String, default="")
+    due_date_timestamp   = Column(Float, nullable=True)
+    scheduled_timestamp  = Column(Float, nullable=True)
+    scheduled_hour       = Column(Float, nullable=True)
+    scheduled_minute     = Column(Float, nullable=True)
+    completed_timestamp  = Column(Float, nullable=True)
+    dose_number          = Column(Float, nullable=True)
+    total_doses          = Column(Float, nullable=True)
+    doctor_name          = Column(String, nullable=True)
+    notes                = Column(String, default="")
+    created_at           = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="vaccine_records")
+
+
+class VaccinationReminderRecord(Base):
+    __tablename__ = "vaccination_reminders"
+
+    id                  = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id             = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    day_timestamp       = Column(Float, nullable=False)
+    hour                = Column(Float, nullable=False)
+    minute              = Column(Float, nullable=False)
+    note                = Column(String, default="")
+    is_enabled          = Column(Boolean, default=True)
+    notify_days_before  = Column(String, default="")   # comma-separated, e.g. "1,3,5"
+    created_at          = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="vaccination_reminders")
 
 
 class DiaperLog(Base):

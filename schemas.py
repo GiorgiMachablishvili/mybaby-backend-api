@@ -93,6 +93,63 @@ class FeedingLogResponse(BaseModel):
         from_attributes = True
 
 
+# ── Vaccination ───────────────────────────────────────────────────────────────
+
+class VaccineRecordCreate(BaseModel):
+    id: Optional[str] = None
+    name: str
+    full_name: str
+    age_range: Optional[str] = ""
+    due_date_timestamp: Optional[float] = None
+    scheduled_timestamp: Optional[float] = None
+    scheduled_hour: Optional[float] = None
+    scheduled_minute: Optional[float] = None
+    completed_timestamp: Optional[float] = None
+    dose_number: Optional[float] = None
+    total_doses: Optional[float] = None
+    doctor_name: Optional[str] = None
+    notes: Optional[str] = ""
+
+class VaccineRecordResponse(BaseModel):
+    id: str
+    name: str
+    full_name: str
+    age_range: str
+    due_date_timestamp: Optional[float] = None
+    scheduled_timestamp: Optional[float] = None
+    scheduled_hour: Optional[float] = None
+    scheduled_minute: Optional[float] = None
+    completed_timestamp: Optional[float] = None
+    dose_number: Optional[float] = None
+    total_doses: Optional[float] = None
+    doctor_name: Optional[str] = None
+    notes: str
+
+    class Config:
+        from_attributes = True
+
+class VaccinationReminderCreate(BaseModel):
+    id: Optional[str] = None
+    day_timestamp: float
+    hour: float
+    minute: float
+    note: Optional[str] = ""
+    is_enabled: Optional[bool] = True
+    notify_days_before: Optional[str] = ""   # comma-separated e.g. "1,3"
+
+class VaccinationReminderResponse(BaseModel):
+    id: str
+    day_timestamp: float
+    hour: float
+    minute: float
+    note: str
+    is_enabled: bool
+    notify_days_before: str
+
+    class Config:
+        from_attributes = True
+
+
 # ── Growth ────────────────────────────────────────────────────────────────────
 
 class GrowthMeasurementCreate(BaseModel):

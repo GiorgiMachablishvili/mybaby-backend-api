@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
 import models
-from routes import auth_routes, sync_routes, profile_routes, feeding_routes, sleep_routes, diaper_routes, growth_routes
+from routes import auth_routes, sync_routes, profile_routes, feeding_routes, sleep_routes, diaper_routes, growth_routes, vaccination_routes
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,6 +23,7 @@ app.include_router(feeding_routes.router)
 app.include_router(sleep_routes.router)
 app.include_router(diaper_routes.router)
 app.include_router(growth_routes.router)
+app.include_router(vaccination_routes.router)
 
 
 @app.get("/")
