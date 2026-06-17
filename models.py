@@ -29,6 +29,7 @@ class BabyProfile(Base):
     name                = Column(String, nullable=False)
     birthday_timestamp  = Column(Float, nullable=True)
     gender              = Column(String, default="Other")
+    photo_base64        = Column(String, nullable=True)
     created_at          = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="baby_profiles")

@@ -28,12 +28,20 @@ class BabyProfileCreate(BaseModel):
     name: str
     birthday_timestamp: Optional[float] = None
     gender: Optional[str] = "Other"
+    photo_base64: Optional[str] = None
+
+class BabyProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    birthday_timestamp: Optional[float] = None
+    gender: Optional[str] = None
+    photo_base64: Optional[str] = None
 
 class BabyProfileResponse(BaseModel):
     id: str
     name: str
     birthday_timestamp: Optional[float] = None
     gender: str
+    photo_base64: Optional[str] = None
 
     class Config:
         from_attributes = True
