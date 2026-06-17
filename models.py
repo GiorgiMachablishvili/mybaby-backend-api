@@ -26,6 +26,7 @@ class User(Base):
     vaccination_reminders   = relationship("VaccinationReminderRecord", back_populates="user", cascade="all, delete")
     doctor_visits           = relationship("DoctorVisitRecord",      back_populates="user", cascade="all, delete")
     visit_reminders         = relationship("VisitReminderRecord",    back_populates="user", cascade="all, delete")
+    baby_memories           = relationship("BabyMemoryRecord",       back_populates="user", cascade="all, delete")
 
 
 class BabyProfile(Base):
@@ -186,6 +187,20 @@ class VisitReminderRecord(Base):
     created_at           = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="visit_reminders")
+
+
+class BabyMemoryRecord(Base):
+    __tablename__ = "baby_memories"
+
+    id         = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id    = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    title      = Column(String, nullable=False)
+    date       = Column(DateTime, nullable=False)
+    text       = Column(String, default="")
+    category   = Column(String, default="memories")   # health/funny/memories/growth/other
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="baby_memories")
 
 
 class DiaperLog(Base):

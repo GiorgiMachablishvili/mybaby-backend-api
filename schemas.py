@@ -93,6 +93,26 @@ class FeedingLogResponse(BaseModel):
         from_attributes = True
 
 
+# ── Baby Memories ─────────────────────────────────────────────────────────────
+
+class BabyMemoryCreate(BaseModel):
+    id: Optional[str] = None
+    title: str
+    date: datetime
+    text: Optional[str] = ""
+    category: Optional[str] = "memories"
+
+class BabyMemoryResponse(BaseModel):
+    id: str
+    title: str
+    date: datetime
+    text: str
+    category: str
+
+    class Config:
+        from_attributes = True
+
+
 # ── Doctor Visits ─────────────────────────────────────────────────────────────
 
 class DoctorVisitCreate(BaseModel):
