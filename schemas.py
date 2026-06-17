@@ -93,6 +93,61 @@ class FeedingLogResponse(BaseModel):
         from_attributes = True
 
 
+# ── Doctor Visits ─────────────────────────────────────────────────────────────
+
+class DoctorVisitCreate(BaseModel):
+    id: Optional[str] = None
+    doctor_name: Optional[str] = ""
+    specialty: Optional[str] = ""
+    clinic: Optional[str] = ""
+    visit_date: datetime
+    visit_type: Optional[str] = "WELL-CHECK"
+    visit_title: str
+    notes: Optional[str] = ""
+    weight_kg: Optional[float] = None
+    height_cm: Optional[float] = None
+    prescriptions: Optional[str] = ""   # comma-separated
+    is_completed: Optional[bool] = False
+
+class DoctorVisitResponse(BaseModel):
+    id: str
+    doctor_name: str
+    specialty: str
+    clinic: str
+    visit_date: datetime
+    visit_type: str
+    visit_title: str
+    notes: str
+    weight_kg: Optional[float] = None
+    height_cm: Optional[float] = None
+    prescriptions: str
+    is_completed: bool
+
+    class Config:
+        from_attributes = True
+
+class VisitReminderCreate(BaseModel):
+    id: Optional[str] = None
+    visit_day_timestamp: float
+    note: Optional[str] = ""
+    notify_days_before: Optional[str] = ""
+    kind_raw: Optional[str] = "doctorVisit"
+    hour: Optional[float] = None
+    minute: Optional[float] = None
+
+class VisitReminderResponse(BaseModel):
+    id: str
+    visit_day_timestamp: float
+    note: str
+    notify_days_before: str
+    kind_raw: str
+    hour: Optional[float] = None
+    minute: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+
 # ── Vaccination ───────────────────────────────────────────────────────────────
 
 class VaccineRecordCreate(BaseModel):
@@ -210,15 +265,3 @@ class DiaperLogResponse(BaseModel):
     class Config:
         from_attributes = True
 
-
-# ── Sync (one call syncs everything) ─────────────────────────────────────────
-
-class SyncRequest(BaseModel):
-    sleep_sessions: list[SleepSessionCreate] = []
-    feeding_logs:   list[FeedingLogCreate]   = []
-    diaper_logs:    list[DiaperLogCreate]    = []
-
-class SyncResponse(BaseModel):
-    sleep_sessions: list[SleepSessionResponse] = []
-    feeding_logs:   list[FeedingLogResponse]   = []
-    diaper_logs:    list[DiaperLogResponse]    = []

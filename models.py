@@ -24,6 +24,8 @@ class User(Base):
     growth_comparison       = relationship("GrowthComparison",       back_populates="user", cascade="all, delete", uselist=False)
     vaccine_records         = relationship("VaccineRecord",          back_populates="user", cascade="all, delete")
     vaccination_reminders   = relationship("VaccinationReminderRecord", back_populates="user", cascade="all, delete")
+    doctor_visits           = relationship("DoctorVisitRecord",      back_populates="user", cascade="all, delete")
+    visit_reminders         = relationship("VisitReminderRecord",    back_populates="user", cascade="all, delete")
 
 
 class BabyProfile(Base):
@@ -147,6 +149,43 @@ class VaccinationReminderRecord(Base):
     created_at          = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="vaccination_reminders")
+
+
+class DoctorVisitRecord(Base):
+    __tablename__ = "doctor_visits"
+
+    id           = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id      = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    doctor_name  = Column(String, default="")
+    specialty    = Column(String, default="")
+    clinic       = Column(String, default="")
+    visit_date   = Column(DateTime, nullable=False)
+    visit_type   = Column(String, default="WELL-CHECK")
+    visit_title  = Column(String, nullable=False)
+    notes        = Column(String, default="")
+    weight_kg    = Column(Float, nullable=True)
+    height_cm    = Column(Float, nullable=True)
+    prescriptions = Column(String, default="")   # comma-separated
+    is_completed = Column(Boolean, default=False)
+    created_at   = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="doctor_visits")
+
+
+class VisitReminderRecord(Base):
+    __tablename__ = "visit_reminders"
+
+    id                   = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id              = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    visit_day_timestamp  = Column(Float, nullable=False)
+    note                 = Column(String, default="")
+    notify_days_before   = Column(String, default="")   # comma-separated
+    kind_raw             = Column(String, default="doctorVisit")
+    hour                 = Column(Float, nullable=True)
+    minute               = Column(Float, nullable=True)
+    created_at           = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="visit_reminders")
 
 
 class DiaperLog(Base):
