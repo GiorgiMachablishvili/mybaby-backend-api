@@ -59,6 +59,12 @@ class SleepSessionResponse(BaseModel):
     start: datetime
     end: datetime
 
+class SleepGoalRequest(BaseModel):
+    goal_hours: float
+
+class SleepGoalResponse(BaseModel):
+    goal_hours: float
+
     class Config:
         from_attributes = True
 

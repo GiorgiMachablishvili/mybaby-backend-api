@@ -19,6 +19,7 @@ class User(Base):
     feeding_logs   = relationship("FeedingLog",   back_populates="user", cascade="all, delete")
     diaper_logs    = relationship("DiaperLog",    back_populates="user", cascade="all, delete")
     baby_profiles  = relationship("BabyProfile",  back_populates="user", cascade="all, delete")
+    sleep_goal     = relationship("SleepGoal",    back_populates="user", cascade="all, delete", uselist=False)
 
 
 class BabyProfile(Base):
@@ -61,6 +62,17 @@ class FeedingLog(Base):
     created_at      = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="feeding_logs")
+
+
+class SleepGoal(Base):
+    __tablename__ = "sleep_goals"
+
+    id         = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id    = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, unique=True)
+    goal_hours = Column(Float, nullable=False, default=14.0)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = relationship("User", back_populates="sleep_goal")
 
 
 class DiaperLog(Base):
