@@ -93,6 +93,49 @@ class FeedingLogResponse(BaseModel):
         from_attributes = True
 
 
+# ── Growth ────────────────────────────────────────────────────────────────────
+
+class GrowthMeasurementCreate(BaseModel):
+    id: Optional[str] = None
+    type_raw: str
+    value: float
+    date: datetime
+    percentile: Optional[float] = None
+
+class GrowthMeasurementResponse(BaseModel):
+    id: str
+    type_raw: str
+    value: float
+    date: datetime
+    percentile: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+class GrowthComparisonRequest(BaseModel):
+    parent1_type: str
+    parent2_type: str
+    parent1_height_cm: Optional[float] = None
+    parent2_height_cm: Optional[float] = None
+    baby_height_cm: Optional[float] = None
+    parent1_skin_tone_index: int = 0
+    parent2_skin_tone_index: int = 0
+    baby_skin_tone_index: int = 0
+
+class GrowthComparisonResponse(BaseModel):
+    parent1_type: str
+    parent2_type: str
+    parent1_height_cm: Optional[float] = None
+    parent2_height_cm: Optional[float] = None
+    baby_height_cm: Optional[float] = None
+    parent1_skin_tone_index: int
+    parent2_skin_tone_index: int
+    baby_skin_tone_index: int
+
+    class Config:
+        from_attributes = True
+
+
 # ── Diaper ────────────────────────────────────────────────────────────────────
 
 class DiaperLogCreate(BaseModel):

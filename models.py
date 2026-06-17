@@ -15,11 +15,13 @@ class User(Base):
     name          = Column(String, nullable=True)
     created_at    = Column(DateTime, default=datetime.utcnow)
 
-    sleep_sessions = relationship("SleepSession", back_populates="user", cascade="all, delete")
-    feeding_logs   = relationship("FeedingLog",   back_populates="user", cascade="all, delete")
-    diaper_logs    = relationship("DiaperLog",    back_populates="user", cascade="all, delete")
-    baby_profiles  = relationship("BabyProfile",  back_populates="user", cascade="all, delete")
-    sleep_goal     = relationship("SleepGoal",    back_populates="user", cascade="all, delete", uselist=False)
+    sleep_sessions       = relationship("SleepSession",      back_populates="user", cascade="all, delete")
+    feeding_logs         = relationship("FeedingLog",        back_populates="user", cascade="all, delete")
+    diaper_logs          = relationship("DiaperLog",         back_populates="user", cascade="all, delete")
+    baby_profiles        = relationship("BabyProfile",       back_populates="user", cascade="all, delete")
+    sleep_goal           = relationship("SleepGoal",         back_populates="user", cascade="all, delete", uselist=False)
+    growth_measurements  = relationship("GrowthMeasurement", back_populates="user", cascade="all, delete")
+    growth_comparison    = relationship("GrowthComparison",  back_populates="user", cascade="all, delete", uselist=False)
 
 
 class BabyProfile(Base):
@@ -73,6 +75,38 @@ class SleepGoal(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="sleep_goal")
+
+
+class GrowthMeasurement(Base):
+    __tablename__ = "growth_measurements"
+
+    id          = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id     = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    type_raw    = Column(String, nullable=False)   # weight / height / head
+    value       = Column(Float, nullable=False)
+    date        = Column(DateTime, nullable=False)
+    percentile  = Column(Float, nullable=True)
+    created_at  = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="growth_measurements")
+
+
+class GrowthComparison(Base):
+    __tablename__ = "growth_comparisons"
+
+    id                     = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id                = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, unique=True)
+    parent1_type           = Column(String, default="mother")
+    parent2_type           = Column(String, default="father")
+    parent1_height_cm      = Column(Float, nullable=True)
+    parent2_height_cm      = Column(Float, nullable=True)
+    baby_height_cm         = Column(Float, nullable=True)
+    parent1_skin_tone_index = Column(Float, default=0)
+    parent2_skin_tone_index = Column(Float, default=0)
+    baby_skin_tone_index   = Column(Float, default=0)
+    updated_at             = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = relationship("User", back_populates="growth_comparison")
 
 
 class DiaperLog(Base):
